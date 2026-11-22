@@ -20,10 +20,13 @@ export class ProductPage {
   }
 
   async openProduct(productName: string) {
-  await this.page
-    .getByRole('heading', { name: productName, exact: true })
-    .click();
-}
+    const heading = this.page.getByRole('heading', {
+      name: productName,
+      exact: true,
+    });
+    await heading.waitFor({ state: 'visible' });
+    await heading.click();
+  }
 
   async addToCart() {
     await this.addToCartButton.click();
@@ -31,16 +34,5 @@ export class ProductPage {
 
   async openCart() {
     await this.cartButton.click();
-  }
-
-  async getProductName() {
-    return (await this.productName.textContent())?.trim() || '';
-  }
-
-  async getProductPrice() {
-    const priceText =
-      (await this.page.getByText(/^\$\d+\.\d{2}$/).first().textContent()) || '';
-
-    return Number(priceText.replace('$', '').trim());
   }
 }

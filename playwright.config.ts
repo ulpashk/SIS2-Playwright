@@ -5,6 +5,8 @@ const isCI = !!process.env.CI;
 export default defineConfig({
   testDir: './tests',
 
+  timeout: isCI ? 60_000 : 30_000,
+
   fullyParallel: true,
 
   forbidOnly: isCI,
