@@ -14,7 +14,14 @@ export class ProductPage {
   }
 
   async openHome() {
-    await this.page.goto('/');
+    await this.page.goto('/', { waitUntil: 'domcontentloaded' });
+    const firstCard = this.page.locator('.card').first();
+    try {
+      await firstCard.waitFor({ state: 'visible', timeout: 15_000 });
+    } catch {
+      await this.page.reload({ waitUntil: 'domcontentloaded' });
+      await firstCard.waitFor({ state: 'visible', timeout: 15_000 });
+    }
   }
 
   async goHome() {
@@ -26,7 +33,7 @@ export class ProductPage {
       name: productName,
       exact: true,
     });
-    await heading.waitFor({ state: 'visible' });
+    await heading.waitFor({ state: 'visible', timeout: 15_000 });
     await heading.click();
   }
 
