@@ -1,20 +1,28 @@
 import { defineConfig, devices } from '@playwright/test';
 
+const isCI = !!process.env.CI;
+
 export default defineConfig({
   testDir: './tests',
 
   fullyParallel: true,
 
-  forbidOnly: !!process.env.CI,
+  forbidOnly: isCI,
 
-  retries: process.env.CI ? 2 : 0,
+  retries: isCI ? 2 : 0,
 
-  workers: 2,
+  workers: isCI ? 2 : undefined,
 
-  reporter: 'html',
-  
+  reporter: isCI
+    ? [
+        ['list'],
+        ['blob', { outputDir: 'blob-report' }],
+        ['junit', { outputFile: 'reports/junit.xml' }],
+      ]
+    : 'html',
+
   use: {
-    baseURL: 'https://practicesoftwaretesting.com',
+    baseURL: process.env.BASE_URL || 'https://practicesoftwaretesting.com',
     testIdAttribute: 'data-test',
     trace: 'on-first-retry',
   },
