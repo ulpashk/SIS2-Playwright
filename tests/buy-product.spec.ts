@@ -1,25 +1,25 @@
 import { test, expect } from '../fixtures/pages.fixture';
+import { createNewUser } from '../data/user.factory';
 
 test('customer can buy a product successfully', async ({
+  registerPage,
   loginPage,
   productPage,
   cartPage,
   checkoutPage,
   page,
 }) => {
-  await loginPage.open();
+  const user = createNewUser();
 
-  await loginPage.login(
-  'customer2@practicesoftwaretesting.com',
-  'welcome01'
-);
+  await registerPage.open();
+  await registerPage.register(user);
+  await expect(page).toHaveURL(/\/auth\/login/);
 
-  // Wait until login is really completed
+  await loginPage.login(user.email, user.password);
   await expect(page).toHaveURL(/\/account/);
 
   await productPage.openHome();
-
-  await productPage.openProduct('Combination Pliers');
+  await productPage.openProduct('Pliers');
 
   await productPage.addToCart();
   await productPage.openCart();
