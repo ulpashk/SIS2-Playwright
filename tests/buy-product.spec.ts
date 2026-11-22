@@ -19,7 +19,7 @@ test('customer can buy a product successfully', async ({
 
   await productPage.openHome();
 
-  await productPage.openProduct('Combination Pliers');
+  await productPage.openProduct('Pliers');
 
   await productPage.addToCart();
   await productPage.openCart();

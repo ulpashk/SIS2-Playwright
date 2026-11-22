@@ -13,7 +13,7 @@ export default defineConfig({
 
   retries: isCI ? 2 : 0,
 
-  workers: isCI ? 2 : undefined,
+  workers: isCI ? 1 : undefined,
 
   reporter: isCI
     ? [

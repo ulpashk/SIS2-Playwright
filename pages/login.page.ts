@@ -14,7 +14,13 @@ export class LoginPage {
   }
 
   async open() {
-    await this.page.goto('/auth/login');
+    await this.page.goto('/auth/login', { waitUntil: 'domcontentloaded' });
+    try {
+      await this.email.waitFor({ state: 'visible', timeout: 15_000 });
+    } catch {
+      await this.page.reload({ waitUntil: 'domcontentloaded' });
+      await this.email.waitFor({ state: 'visible', timeout: 15_000 });
+    }
   }
 
   async login(email: string, password: string) {
