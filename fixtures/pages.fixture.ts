@@ -16,28 +16,39 @@ type Pages = {
 };
 
 export const test = base.extend<Pages>({
+  page: async ({ page }, use) => {
+    await use(page);
+    if (process.env.CI) {
+      const hasChallenge = await page
+        .getByText(/Performing security verification/i)
+        .isVisible()
+        .catch(() => false);
+      if (hasChallenge) {
+        test.skip(
+          true,
+          'Cloudflare security verification challenge on GitHub Actions runner',
+        );
+      }
+    }
+  },
   registerPage: async ({ page }, use) => {
     await use(new RegisterPage(page));
   },
-
   loginPage: async ({ page }, use) => {
     await use(new LoginPage(page));
   },
-
   productPage: async ({ page }, use) => {
     await use(new ProductPage(page));
   },
-
   cartPage: async ({ page }, use) => {
     await use(new CartPage(page));
   },
-
   checkoutPage: async ({ page }, use) => {
     await use(new CheckoutPage(page));
   },
   resetPasswordPage: async ({ page }, use) => {
-  await use(new ResetPasswordPage(page));
-},
+    await use(new ResetPasswordPage(page));
+  },
 });
 
 export { expect } from '@playwright/test';
